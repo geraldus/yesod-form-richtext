@@ -16,7 +16,6 @@ library
   hs-source-dirs:      src
   exposed-modules:     Yesod.Form.Summernote
   build-depends:       base               >= 4.7     && < 5
-                     , blaze-builder      >= 0.2.1.4
                      , blaze-html         >= 0.5
                      , shakespeare        >= 2.0
                      , text               >= 0.9

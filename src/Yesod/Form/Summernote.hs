@@ -22,9 +22,8 @@ import           Control.Monad                   (when)
 import           Data.Maybe                      (listToMaybe)
 import           Data.Text                       (Text, pack)
 import           Text.Blaze.Html.Renderer.String (renderHtml)
-import           Text.Hamlet                     (shamlet)
 import           Text.HTML.SanitizeXSS           (sanitizeBalance)
-import           Text.Julius                     (julius, rawJS)
+import           Text.Julius                     (rawJS)
 import           Yesod.Core
 import           Yesod.Form
 
