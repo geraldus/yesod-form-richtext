@@ -22,9 +22,8 @@ import           Control.Monad                   (when)
 import           Data.Maybe                      (listToMaybe)
 import           Data.Text                       (Text, pack)
 import           Text.Blaze.Html.Renderer.String (renderHtml)
-import           Text.Hamlet                     (shamlet)
 import           Text.HTML.SanitizeXSS           (sanitizeBalance)
-import           Text.Julius                     (julius, rawJS)
+import           Text.Julius                     (rawJS)
 import           Yesod.Core
 import           Yesod.Form
 
@@ -67,9 +66,9 @@ class Yesod a => YesodSummernote a where
 -- @
 -- snHtmlFieldCustomized "{ height: 150, codemirror: { theme:'monokai' } }"
 -- @
-snHtmlFieldCustomized :: (YesodSummernote site, Monad m)
+snHtmlFieldCustomized :: (YesodSummernote (HandlerSite m), MonadHandler m)
                       => String
-                      -> Field (HandlerT site m) Html
+                      -> Field m Html
 snHtmlFieldCustomized cfg = Field
     { fieldParse =
         \e _ -> return $
@@ -80,13 +79,13 @@ $newline never
 <textarea id="#{theId}" *{attrs} name="#{name}" .html>#{showVal val}
 |]
         master <- getYesod
-        (when (summernoteLoadLibrariesAndCss master) $ do
+        when (summernoteLoadLibrariesAndCss master) $ do
             addScript'     urlJQueryScript
             addStylesheet' urlBootstrapCss
             addScript'     urlBootstrapScript
             addStylesheet' urlSummernoteCss
-            addScript'     urlSummernoteScript)
-        toWidget $ [julius|
+            addScript'     urlSummernoteScript
+        toWidget [julius|
 $(document).ready(function(){
   var input = document.getElementById("#{rawJS theId}");
   $(input).summernote(#{rawJS cfg}).on('summernote.change',function(){
@@ -99,8 +98,8 @@ $(document).ready(function(){
     showVal = either id (pack . renderHtml)
 
 -- | Summernote editor field with default settings.
-snHtmlField :: (YesodSummernote site, Monad m)
-            => Field (HandlerT site m) Html
+snHtmlField :: (YesodSummernote (HandlerSite m), MonadHandler m)
+            => Field m Html
 snHtmlField = snHtmlFieldCustomized ""
 
 
